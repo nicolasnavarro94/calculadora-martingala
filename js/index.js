@@ -12,6 +12,7 @@ let tamano_total;
 let stop_loss = 0;
 let promedio = 0;
 let porcentage_stop = 0;
+let roe = 0
 
 select.addEventListener("change", function () {
   const valorSeleccionado = select.value;
@@ -83,7 +84,7 @@ function calcular() {
 
       newRow.innerHTML = `
 
-                <td class='table-danger text-danger'>Stop Loss</td>
+                <td class='table-danger text-danger'>Stop Loss (-${roe}%)</td>
                 <td class='table-danger'>${redondearNumero(stop_loss)}</td>
                 <td class='table-danger'>${redondearNumero(tamano_total)}</td>
                 <td class='table-danger'>${redondearNumero(gasto_total)}</td>`;
@@ -99,7 +100,7 @@ function calcular() {
       stop_loss = nuevo_stop_loss;
       porcentage_stop = nuevo_porcentage_stop;
       promedio = nuevo_promedio;
-      console.log(promedio);
+      roe = redondearNumero(sl/gasto_total*100)
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
 
