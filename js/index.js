@@ -9,6 +9,9 @@ let entrada = 0;
 let tamano = 0;
 let gasto_total;
 let tamano_total;
+let stop_loss = 0;
+let promedio = 0;
+let porcentage_stop = 0;
 
 select.addEventListener("change", function () {
   const valorSeleccionado = select.value;
@@ -48,7 +51,7 @@ function calcular() {
   tbody.innerHTML = "";
   while (continuar) {
     let nuevo_precio;
-    let stop_loss;
+
     if (tipo == 1) {
       nuevo_precio = entrada - (entrada * recompra) / 100;
     } else {
@@ -56,16 +59,18 @@ function calcular() {
     }
     let nueva_cantidad = tamano + (tamano * recomprar) / 100;
     let nuevo_gasto_total = gasto_total + nueva_cantidad * nuevo_precio;
-    let promedio = nuevo_gasto_total / (nueva_cantidad + tamano_total);
-    let porcentage_stop = (sl / nuevo_gasto_total) * 100;
+    let nuevo_promedio = nuevo_gasto_total / (nueva_cantidad + tamano_total);
+    let nuevo_porcentage_stop = (sl / nuevo_gasto_total) * 100;
 
     if (tipo == 1) {
-      stop_loss = promedio - (promedio * porcentage_stop) / 100;
+      nuevo_stop_loss =
+        nuevo_promedio - (nuevo_promedio * nuevo_porcentage_stop) / 100;
     } else {
-      stop_loss = promedio + (promedio * porcentage_stop) / 100;
+      nuevo_stop_loss =
+        nuevo_promedio + (nuevo_promedio * nuevo_porcentage_stop) / 100;
     }
 
-    if (porcentage_stop < recompra) {
+    if (nuevo_porcentage_stop < recompra) {
       console.log(
         "stop: " +
           stop_loss +
@@ -91,14 +96,10 @@ function calcular() {
       tamano = nueva_cantidad;
       tamano_total += tamano;
       gasto_total = nuevo_gasto_total;
-      console.log(
-        "Entrada: " +
-          entrada +
-          " Tamaño: " +
-          tamano +
-          " Usdt: " +
-          nueva_cantidad * nuevo_precio
-      );
+      stop_loss = nuevo_stop_loss;
+      porcentage_stop = nuevo_porcentage_stop;
+      promedio = nuevo_promedio;
+      console.log(promedio);
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
 
@@ -120,7 +121,7 @@ function calcular() {
 
 function redondearNumero(numero) {
   if (numero < 1) {
-    return numero.toFixed(6); 
+    return numero.toFixed(6);
   } else {
     return numero.toFixed(2);
   }
